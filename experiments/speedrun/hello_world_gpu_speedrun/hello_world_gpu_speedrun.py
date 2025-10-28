@@ -25,8 +25,9 @@ from experiments.llama import llama_nano
 from experiments.simple_train_config import SimpleTrainConfig
 from marin.execution.executor import executor_main
 from marin.resources import GpuConfig
-from marin.speedrun.speedrun import Author, SpeedrunConfig, default_speedrun
-
+from marin.speedrun.speedrun import Author, SpeedrunConfig, default_speedrun, speedrun_results
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 logger = logging.getLogger("ray")
 
 speedrun_config = SpeedrunConfig(
@@ -38,12 +39,12 @@ speedrun_config = SpeedrunConfig(
     description="Nano model based on Llama architecture.",
     model_config=llama_nano,
     train_config=SimpleTrainConfig(
-        GpuConfig(gpu_count=1, accelerator_type="A100"),
+        GpuConfig(gpu_count=1, accelerator_type="H100"),
         train_batch_size=32,
         num_train_steps=100,
         learning_rate=3e-3,
         weight_decay=0.1,
-        steps_per_eval=500,
+        steps_per_eval=100,
     ),
     # tokenized_dataset need not be set here; by default it will be set to a FineWeb-Edu 10B token dataset
     # that we have pre-tokenized and shuffled, available at https://huggingface.co/datasets/marin-community/fineweb-edu-pretokenized-10B
